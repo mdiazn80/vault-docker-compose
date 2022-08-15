@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  vault:
+    build:
+      context: vault/
+      args:
+        VAULT_VERSION: ${VAULT_VERSION}
+    hostname: vault
+    container_name: vault
+    ports:
+      - "8200:8200"
+    volumes:
+      - type: bind
+        source: ./data/vault
+        target: /vault/data
+      - type: bind
+        source: ./vault/config
+        target: /vault/config
+      - type: bind
+        source: ./vault/policies
+        target: /vault/policies
+    command: "server"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - vault-network
+
+networks:
+  vault-network:
+    driver: bridge
